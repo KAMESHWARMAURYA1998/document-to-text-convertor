@@ -1,0 +1,24 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 16px;
+  }
+  
+  #content {
+    margin-top: 20px;
+    background: #f9f9f9;
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+  }
+  
+  @media screen and (max-width: 768px) {
+    #content {
+      font-size: 14px;
+    }
+  }
+  
+  @media screen and (min-width: 769px) {
+    #content {
+      font-size: 16px;
+    }
+  }

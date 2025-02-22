@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Docx Viewer</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      margin: 0;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin-bottom: 10px;
+    }
+
+    #viewer {
+      width: 100%;
+      height: 300px;
+      border: 1px solid #ccc;
+      margin-top: 20px;
+      overflow-y: scroll;
+      padding: 10px;
+      font-size: 16px; /* Default font size */
+    }
+
+    .resize-btn {
+      margin-top: 10px;
+      padding: 8px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-right: 5px;
+    }
+
+    .resize-btn:hover {
+      background-color: #45a049;
+    }
+
+    .font-size-selector {
+      margin-top: 10px;
+    }
+
+    .font-size-selector select {
+      padding: 5px;
+      font-size: 14px;
+    }
+
+    /* Media Queries for Mobile Resolutions */
+    /* For iPhone 6/7/8 */
+    @media screen and (max-width: 375px) {
+      #viewer {
+        font-size: 14px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For iPhone 6/7/8 Plus */
+    @media screen and (max-width: 414px) {
+      #viewer {
+        font-size: 16px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For iPhone X */
+    @media screen and (max-width: 375px) and (min-height: 812px) {
+      #viewer {
+        font-size: 14px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For Android phones (common size) */
+    @media screen and (max-width: 360px) {
+      #viewer {
+        font-size: 14px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For larger phones (e.g., Android Note 9, Pixel) */
+    @media screen and (max-width: 540px) {
+      #viewer {
+        font-size: 18px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For Tablets (portrait) */
+    @media screen and (max-width: 768px) {
+      #viewer {
+        font-size: 18px;
+        width: 100%;
+        height: auto;
+      }
+    }
+
+    /* For larger Tablets / Small Laptops (landscape) */
+    @media screen and (max-width: 1024px) {
+      #viewer {
+        font-size: 20px;
+        width: 100%;
+        height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Upload and View .docx File</h1>
+  
+  <input type="file" id="fileInput" accept=".docx" />
+  <div id="viewer"></div>
+
+  <div class="font-size-selector">
+    <label for="fontSize">Choose Font Size: </label>
+    <select id="fontSize">
+      <option value="12px">12px</option>
+      <option value="14px">14px</option>
+      <option value="16px">16px</option>
+      <option value="18px">18px</option>
+      <option value="20px">20px</option>
+    </select>
+  </div>
+
+  <button class="resize-btn" onclick="resizeViewer(360)">Resize to 360px</button>
+  <button class="resize-btn" onclick="resizeViewer(480)">Resize to 480px</button>
+  <button class="resize-btn" onclick="resizeViewer(600)">Resize to 600px</button>
+  <button class="resize-btn" onclick="resizeViewer(1024)">Resize to 1024px</button>
+  <button class="resize-btn" onclick="resizeViewer(1440)">Resize to 1440px</button>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.2/mammoth.browser.min.js"></script>
+  <script>
+    // Handle file upload and display
+    document.getElementById("fileInput").addEventListener("change", function (e) {
+      const file = this.files[0];
+      if (file) {
+        console.log("File selected: ", file.name);  // Debugging: Log selected file
+        
+        const reader = new FileReader();
+        
+        reader.onload = function(event) {
+          const arrayBuffer = reader.result;
+
+          // Use Mammoth to convert .docx to HTML
+          mammoth.convertToHtml({ arrayBuffer: arrayBuffer })
+            .then(function(result) {
+              console.log("Mammoth output: ", result.value); // Debugging: Log parsed HTML
+              document.getElementById("viewer").innerHTML = result.value;
+
+              // Apply selected font size after document is loaded
+              updateFontSize();
+            })
+            .catch(function(err) {
+              console.error("Error during conversion: ", err);
+            });
+        };
+        
+        reader.readAsArrayBuffer(file);
+      } else {
+        console.error("No file selected.");
+      }
+    });
+
+    // Resize viewer to simulate different screen sizes
+    function resizeViewer(width) {
+      const viewer = document.getElementById("viewer");
+      viewer.style.width = width + "px";
+      viewer.style.height = "auto";
+    }
+
+    // Update font size based on the user's selection
+    document.getElementById("fontSize").addEventListener("change", updateFontSize);
+
+    function updateFontSize() {
+      const viewer = document.getElementById("viewer");
+      const fontSize = document.getElementById("fontSize").value;
+      viewer.style.fontSize = fontSize;
+    }
+  </script>
+
+</body>
+</html>
